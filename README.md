@@ -20,5 +20,11 @@ npm run build
 npm run lint
 ```
 
+### 参考文档
+```
+https://huaxhe.gitee.io/vue3_study_docs
+typeScript快速入门
+http://ts.xcatliu.com/introduction/hello-typescript.html
+```
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
