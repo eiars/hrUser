@@ -1,8 +1,17 @@
 <template>
 <div>
+  <h3>vue3Demo:toDoList</h3>
+  <div class="todo-container">
+    <div class="todo-wrap">
+      toDoList
+      <Header :addTodo="addTodo"/>
+      <List :todos="todos" :deleTodo="deleTodo" :updateTodo="updateTodo"/>
+      <Footer :todos="todos" :checkAll="checkAll" :clearAllCompletedTodos="clearAllCompletedTodos"/>
+    </div>
+  </div>
   <h3>新组件</h3>
   <div>
-    <modal-button/>
+    <!-- <modal-button/> -->
   </div>
   <h3>更多</h3>
   <!-- <div>
@@ -49,7 +58,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, reactive, toRefs } from 'vue';
 // import Setup from './demo/setup.vue';
 // import Ref from './demo/ref.vue'
 // import Reactive from './demo/reactive.vue'
@@ -66,19 +75,61 @@ import { defineComponent } from 'vue';
 // import ToRef from './moreDemo/toRef.vue'
 // import CustomRef from './moreDemo/customRef.vue'
 // import ProvideInject from './moreDemo/provideInject.vue'
-import ModalButton from './write/teleport.vue'
+// import ModalButton from './write/teleport.vue'
+
+import Header from './todoList/header.vue'
+import List from './todoList/list.vue'
+import Footer from './todoList/footer.vue'
+
+// 引入接口
+import {Todo} from './todoList/todo'
 
 export default defineComponent({
   name: 'App',
   components: {
     // Setup, Ref, Reactive, ComputedWatch, Period, Hook, HookRequest, ToRefs, InputRef
     // ShallowReactive, ShallowReadonly, MarkRaw, ToRef, CustomRef, ProvideInject,
-    ModalButton
+    // ModalButton,
+    Header, List, Footer
+  },
+  setup () {
+    // 定义数组
+    const state = reactive<{todos: Todo[]}>({
+      todos: [
+        {id:1, title: '奔驰', isCompleted: false}
+      ]
+    })
+    // 添加数据
+    const addTodo = (todo: Todo) => {
+      state.todos.unshift(todo)
+      console.log(state, '--->添加数据后state')
+    }
+    // 删除数据
+    const deleTodo = (index: number) => {
+      state.todos.splice(index, 1)
+      console.log(state, index, '--->删除数据')
+    }
+    // 更新数据
+    const updateTodo = (todo: Todo, isCompleted: boolean) => {
+      todo.isCompleted = isCompleted
+      console.log(todo, '--->更新数据')
+    }
+    // 是否全选
+    const checkAll = (isCompleted: boolean) => {
+      state.todos.forEach((todo) => {
+        todo.isCompleted = isCompleted
+      })
+    }
+    // 清除所有选中数据
+    const clearAllCompletedTodos = () => {
+      state.todos = state.todos.filter((todo) => !todo.isCompleted)
+    }
+    return {...toRefs(state), addTodo, deleTodo, updateTodo, checkAll, clearAllCompletedTodos}
   }
 });
 </script>
 
-<style>
+<style scoped>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -86,5 +137,14 @@ export default defineComponent({
   text-align: left;
   color: #2c3e50;
   margin-top: 60px;
+}
+.todo-container {
+  width: 600px;
+  /* margin: 0 auto; */
+}
+.todo-container .todo-wrap {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
 }
 </style>
